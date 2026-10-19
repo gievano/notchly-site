@@ -9,34 +9,24 @@
 </head>
 <body>
 
-<header class="bar">
-  <a class="brand" href="#"><span class="brand-notch"></span>notchly</a>
-  <nav>
-    <a href="#features">features</a>
-    <a href="#download">download</a>
-    <a href="https://github.com/gievano/notchly" target="_blank" rel="noopener">github</a>
-  </nav>
-</header>
-
-<!-- animated notch demo -->
-<section class="stage">
-  <div class="demo-notch" id="demoNotch">
-    <div class="demo-collapsed">
-      <div class="eq"><span></span><span></span><span></span></div>
-      <span class="demo-title">midnight city — m83</span>
-      <span class="demo-lens"></span>
+<!-- the page is a mac screen: menu bar with a living notch -->
+<div class="menubar">
+  <span class="wordmark">notchly</span>
+  <div class="notch" id="notch" aria-label="notchly demo">
+    <div class="notch-collapsed" id="notchCollapsed">
+      <div class="eq" aria-hidden="true"><span></span><span></span><span></span></div>
+      <span class="notch-title" id="notchTitle">midnight city — m83</span>
+      <span class="notch-lens" aria-hidden="true"></span>
     </div>
-    <div class="demo-card">
-      <div class="demo-head">
-        <div class="demo-art"></div>
+    <div class="notch-card" id="notchCard" aria-hidden="true">
+      <div class="np-head">
+        <div class="np-art"></div>
         <div>
-          <div class="demo-track">midnight city</div>
-          <div class="demo-artist">m83</div>
+          <div class="np-track">midnight city</div>
+          <div class="np-artist">m83</div>
         </div>
       </div>
-      <div class="demo-progress"><div class="demo-bar" id="demoBar"></div></div>
-      <div class="demo-controls"><span>⏮</span><span class="big">⏸</span><span>⏭</span></div>
-      <div class="demo-lyrics" id="demoLyrics">
+      <div class="np-lyrics" id="npLyrics">
         <div>waiting in a car</div>
         <div>waiting for a ride in the dark</div>
         <div>the night city grows</div>
@@ -44,62 +34,60 @@
       </div>
     </div>
   </div>
-  <h1>the notch<br>windows never had.</h1>
-  <p class="sub">music with synced lyrics, calendar, file tray, focus timer and todo —<br>tucked into the top of your screen.</p>
-  <div class="cta">
-    <a class="btn primary" href="https://github.com/gievano/notchly/releases">download for windows</a>
-    <a class="btn" href="https://github.com/gievano/notchly" target="_blank" rel="noopener">view on github</a>
-  </div>
-  <p class="fine">free &amp; open source (MIT) · portable exe, no install</p>
-</section>
+  <span class="clock" id="clock">00:00</span>
+</div>
 
-<section class="wrap" id="features">
-  <h2>one notch, five tabs</h2>
-  <div class="grid">
-    <div class="card reveal">
-      <h3>now playing</h3>
-      <p>title, artist, cover art and controls, straight from the windows SMTC api. works with spotify, browsers, mpv — anything in the volume flyout. click the progress bar to seek.</p>
-    </div>
-    <div class="card reveal">
-      <h3>synced lyrics</h3>
-      <p>lyrics fetched from lrclib.net with the current line highlighted as the song plays. looked up once, cached locally, instant the next time.</p>
-    </div>
-    <div class="card reveal">
-      <h3>calendar</h3>
-      <p>a month view with today highlighted. no account, no sync, just the date.</p>
-    </div>
-    <div class="card reveal">
-      <h3>shelf</h3>
-      <p>a file tray for the things you need within reach. drag files in from explorer, click to open them later.</p>
-    </div>
-    <div class="card reveal">
-      <h3>focus</h3>
-      <p>25 / 5 / 15 minute timer with a daily session count. while a session runs, the countdown lives in the collapsed notch.</p>
-    </div>
-    <div class="card reveal">
-      <h3>todo</h3>
-      <p>a plain local task list. check things off, delete them, move on.</p>
-    </div>
-  </div>
-</section>
+<main>
+  <section class="hero">
+    <h1>your screen is<br>missing something.</h1>
+    <p>notchly is a mac-style notch for windows. it shows what&rsquo;s playing with synced lyrics, plus a calendar, a file tray, a focus timer and a todo list &mdash; in 30 pixels at the top of your screen. the notch up there is the real demo: hover it, like the actual app.</p>
+    <a class="btn" href="https://github.com/gievano/notchly/releases">download for windows</a>
+    <p class="fine">free &middot; open source (MIT) &middot; portable exe, no install</p>
+  </section>
 
-<section class="wrap slim" id="light">
-  <h2>built to disappear</h2>
-  <p class="lead">one window, one small watcher process, no background services. the media watcher polls once a second while music plays and slows down when nothing does. the lyrics cache caps itself. it sits at the top of your screen and stays out of your way.</p>
-</section>
+  <section class="spec">
+    <div class="row">
+      <h2>now playing</h2>
+      <p>title, artist, cover and controls from the windows SMTC api. works with spotify, browsers, mpv &mdash; anything in the volume flyout. click the progress bar to seek.</p>
+    </div>
+    <div class="row">
+      <h2>synced lyrics</h2>
+      <p>from lrclib.net, highlighted line by line as the song plays. looked up once, cached locally, instant the next time.</p>
+    </div>
+    <div class="row">
+      <h2>calendar</h2>
+      <p>month view. today is highlighted. that&rsquo;s it.</p>
+    </div>
+    <div class="row">
+      <h2>shelf</h2>
+      <p>drag files in from explorer. click to open them later.</p>
+    </div>
+    <div class="row">
+      <h2>focus</h2>
+      <p>25 / 5 / 15 minute timer with a daily count. while a session runs, the countdown lives in the notch.</p>
+    </div>
+    <div class="row">
+      <h2>todo</h2>
+      <p>a local list. check things off.</p>
+    </div>
+  </section>
 
-<section class="wrap slim center" id="download">
-  <h2>get notchly</h2>
-  <p class="lead">grab the portable exe from the releases page and run it. that's the whole install.</p>
-  <div class="cta">
-    <a class="btn primary big" href="https://github.com/gievano/notchly/releases">download for windows</a>
-  </div>
-  <p class="fine">windows 10 / 11 · ~80 mb portable</p>
-</section>
+  <section class="light">
+    <h2>light</h2>
+    <p>one window. one small watcher process. it polls once a second while music plays, every three seconds when idle. the lyrics cache caps itself at 200 songs. nothing runs at startup unless you ask it to.</p>
+  </section>
+
+  <section class="get">
+    <h2>get it</h2>
+    <p>one file, no installer.</p>
+    <a class="btn" href="https://github.com/gievano/notchly/releases">download for windows</a>
+    <p class="fine">windows 10 / 11 &middot; ~80 mb portable</p>
+  </section>
+</main>
 
 <footer>
-  <span>notchly — MIT licensed</span>
-  <a href="https://github.com/gievano/notchly" target="_blank" rel="noopener">github</a>
+  <span>notchly &middot; MIT</span>
+  <a href="https://github.com/gievano/notchly">github</a>
 </footer>
 
 <script src="app.js"></script>

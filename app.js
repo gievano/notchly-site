@@ -1,41 +1,53 @@
-// notchly landing — demo notch loop + scroll reveals
+// notchly landing: live clock + the notch demos itself on hover/tap,
+// exactly like the real app
 (function () {
-  var notch = document.getElementById('demoNotch');
-  var bar = document.getElementById('demoBar');
-  var lines = Array.prototype.slice.call(document.querySelectorAll('#demoLyrics div'));
-  var li = 0, progress = 10;
+  'use strict';
 
-  function cycleLyrics() {
-    lines.forEach(function (l) { l.classList.remove('on'); });
-    lines[li % lines.length].classList.add('on');
-    li++;
-    progress = Math.min(96, progress + 7);
-    bar.style.width = progress + '%';
+  // live clock in the menu bar
+  var clock = document.getElementById('clock');
+  function tick() {
+    var d = new Date();
+    var h = String(d.getHours()).padStart(2, '0');
+    var m = String(d.getMinutes()).padStart(2, '0');
+    clock.textContent = h + ':' + m;
   }
+  tick();
+  setInterval(tick, 10000);
 
+  var notch = document.getElementById('notch');
+  var lines = Array.prototype.slice.call(
+    document.querySelectorAll('#npLyrics div')
+  );
+  var lineIdx = 0;
   var lyricTimer = null;
-  function loop() {
-    // collapsed
-    notch.classList.remove('open');
-    setTimeout(function () {
-      // expand
-      notch.classList.add('open');
-      li = 0; progress = 10;
-      cycleLyrics();
-      lyricTimer = setInterval(cycleLyrics, 1800);
-      setTimeout(function () {
-        clearInterval(lyricTimer);
-        loop();
-      }, 8200);
-    }, 2200);
-  }
-  loop();
 
-  // scroll reveals
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+  function highlight(i) {
+    lines.forEach(function (el, j) {
+      el.classList.toggle('active', j === i);
     });
-  }, { threshold: 0.15 });
-  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  }
+
+  function open() {
+    notch.classList.add('expanded');
+    lineIdx = 0;
+    highlight(0);
+    clearInterval(lyricTimer);
+    lyricTimer = setInterval(function () {
+      lineIdx = (lineIdx + 1) % lines.length;
+      highlight(lineIdx);
+    }, 1600);
+  }
+
+  function close() {
+    notch.classList.remove('expanded');
+    clearInterval(lyricTimer);
+  }
+
+  notch.addEventListener('mouseenter', open);
+  notch.addEventListener('mouseleave', close);
+  // touch: tap toggles
+  notch.addEventListener('click', function () {
+    if (notch.classList.contains('expanded')) close();
+    else open();
+  });
 })();
