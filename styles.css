@@ -53,7 +53,7 @@ a:focus-visible, button:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   z-index: 101;
-  width: 300px;
+  width: 260px;
 }
 
 .notch-collapsed {
