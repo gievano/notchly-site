@@ -78,17 +78,6 @@ a:focus-visible, button:focus-visible {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 108px;
-}
-
-.notch-lens {
-  width: 10px; height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #2e4a6b 0%, #0a0f16 55%, #000 100%);
-  border: 1px solid rgba(255, 255, 255, .1);
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .eq { display: flex; align-items: flex-end; gap: 2.5px; height: 12px; }
