@@ -53,7 +53,7 @@ a:focus-visible, button:focus-visible {
   left: 50%;
   transform: translateX(-50%);
   z-index: 101;
-  width: 260px;
+  width: 200px;
 }
 
 .notch-collapsed {
@@ -203,7 +203,7 @@ footer a:hover { color: var(--ink); }
 
 @media (max-width: 620px) {
   .wordmark, .clock { display: none; }
-  .notch { width: 240px; }
+  .notch { width: 180px; }
   .notch-card { width: min(340px, 92vw); }
   .row { grid-template-columns: 1fr; gap: 10px; }
   main { padding-top: 120px; }
