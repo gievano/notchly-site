@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>notchly — a mac-style notch for windows</title>
+<meta name="description" content="notchly puts a mac-style notch at the top of your windows screen: music with synced lyrics, calendar, file tray, focus timer and todo.">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="#"><span class="brand-notch"></span>notchly</a>
+  <nav>
+    <a href="#features">features</a>
+    <a href="#download">download</a>
+    <a href="https://github.com/gievano/notchly" target="_blank" rel="noopener">github</a>
+  </nav>
+</header>
+
+<!-- animated notch demo -->
+<section class="stage">
+  <div class="demo-notch" id="demoNotch">
+    <div class="demo-collapsed">
+      <div class="eq"><span></span><span></span><span></span></div>
+      <span class="demo-title">midnight city — m83</span>
+      <span class="demo-lens"></span>
+    </div>
+    <div class="demo-card">
+      <div class="demo-head">
+        <div class="demo-art"></div>
+        <div>
+          <div class="demo-track">midnight city</div>
+          <div class="demo-artist">m83</div>
+        </div>
+      </div>
+      <div class="demo-progress"><div class="demo-bar" id="demoBar"></div></div>
+      <div class="demo-controls"><span>⏮</span><span class="big">⏸</span><span>⏭</span></div>
+      <div class="demo-lyrics" id="demoLyrics">
+        <div>waiting in a car</div>
+        <div>waiting for a ride in the dark</div>
+        <div>the night city grows</div>
+        <div>look and see her eyes, they glow</div>
+      </div>
+    </div>
+  </div>
+  <h1>the notch<br>windows never had.</h1>
+  <p class="sub">music with synced lyrics, calendar, file tray, focus timer and todo —<br>tucked into the top of your screen.</p>
+  <div class="cta">
+    <a class="btn primary" href="https://github.com/gievano/notchly/releases">download for windows</a>
+    <a class="btn" href="https://github.com/gievano/notchly" target="_blank" rel="noopener">view on github</a>
+  </div>
+  <p class="fine">free &amp; open source (MIT) · portable exe, no install</p>
+</section>
+
+<section class="wrap" id="features">
+  <h2>one notch, five tabs</h2>
+  <div class="grid">
+    <div class="card reveal">
+      <h3>now playing</h3>
+      <p>title, artist, cover art and controls, straight from the windows SMTC api. works with spotify, browsers, mpv — anything in the volume flyout. click the progress bar to seek.</p>
+    </div>
+    <div class="card reveal">
+      <h3>synced lyrics</h3>
+      <p>lyrics fetched from lrclib.net with the current line highlighted as the song plays. looked up once, cached locally, instant the next time.</p>
+    </div>
+    <div class="card reveal">
+      <h3>calendar</h3>
+      <p>a month view with today highlighted. no account, no sync, just the date.</p>
+    </div>
+    <div class="card reveal">
+      <h3>shelf</h3>
+      <p>a file tray for the things you need within reach. drag files in from explorer, click to open them later.</p>
+    </div>
+    <div class="card reveal">
+      <h3>focus</h3>
+      <p>25 / 5 / 15 minute timer with a daily session count. while a session runs, the countdown lives in the collapsed notch.</p>
+    </div>
+    <div class="card reveal">
+      <h3>todo</h3>
+      <p>a plain local task list. check things off, delete them, move on.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap slim" id="light">
+  <h2>built to disappear</h2>
+  <p class="lead">one window, one small watcher process, no background services. the media watcher polls once a second while music plays and slows down when nothing does. the lyrics cache caps itself. it sits at the top of your screen and stays out of your way.</p>
+</section>
+
+<section class="wrap slim center" id="download">
+  <h2>get notchly</h2>
+  <p class="lead">grab the portable exe from the releases page and run it. that's the whole install.</p>
+  <div class="cta">
+    <a class="btn primary big" href="https://github.com/gievano/notchly/releases">download for windows</a>
+  </div>
+  <p class="fine">windows 10 / 11 · ~80 mb portable</p>
+</section>
+
+<footer>
+  <span>notchly — MIT licensed</span>
+  <a href="https://github.com/gievano/notchly" target="_blank" rel="noopener">github</a>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
