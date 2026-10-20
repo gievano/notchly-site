@@ -4,7 +4,7 @@ The landing page for [notchly](https://github.com/gievano/notchly), a small mac-
 
 ## Preview
 
-The page includes a CSS-built desktop/product mockup with interactive Music, Focus, Shelf, and Todo views. The site is plain HTML, CSS, and JavaScript with no build step or runtime dependencies.
+The page includes a CSS-built desktop/product mockup with interactive Music, Focus, Shelf, and Todo views. The mock notch behaves like the real app — hover it and it springs open, move away and it closes; the lyrics highlight cycles, the progress bar plays, and the focus timer counts down. The site is plain HTML, CSS, and JavaScript with no build step or runtime dependencies.
 
 ## Develop locally
 
