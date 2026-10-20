@@ -388,16 +388,18 @@ button:focus-visible, a:focus-visible {
 }
 .ticker-track {
   width: max-content;
-  min-height: 58px;
+  min-height: 84px;
   display: flex;
   align-items: center;
-  gap: 19px;
+  gap: 26px;
   padding: 0 30px;
-  color: #aeb4ad;
-  font-size: 10px;
-  animation: ticker-scroll 44s linear infinite;
+  color: var(--ink);
+  font-size: 19px;
+  font-weight: 560;
+  letter-spacing: -.02em;
+  animation: ticker-scroll 52s linear infinite;
 }
-.ticker-track i { color: var(--accent); font-style: normal; font-size: 16px; }
+.ticker-track i { color: var(--accent); font-style: normal; font-size: 20px; }
 .ticker:hover .ticker-track { animation-play-state: paused; }
 @keyframes ticker-scroll { to { transform: translateX(-50%); } }
 
@@ -541,7 +543,7 @@ button:focus-visible, a:focus-visible {
   .desktop-dock { transform: translateX(-50%) scale(.88); transform-origin: bottom center; }
   .visual-caption { font-size: 8px; }
   .visual-caption > span:last-child { max-width: 48%; text-align: right; }
-  .ticker-track { min-height: 49px; gap: 13px; font-size: 9px; }
+  .ticker-track { min-height: 64px; gap: 18px; font-size: 15px; }
   .features { padding-top: 75px; padding-bottom: 72px; }
   .section-heading h2, .details h2 { font-size: 42px; }
   .feature-grid { grid-template-columns: 1fr; }
