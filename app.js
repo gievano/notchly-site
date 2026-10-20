@@ -80,6 +80,8 @@
       var min = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
       var sec = String(secondsLeft % 60).padStart(2, '0');
       focusTimer.textContent = min + ':' + sec;
+      var ft = document.querySelector('.focus-demo-track span');
+      if (ft) ft.style.width = ((1 - secondsLeft / 1500) * 100).toFixed(1) + '%';
     }
     drawTimer();
     window.setInterval(function () {
@@ -87,6 +89,57 @@
       secondsLeft -= 1;
       drawTimer();
     }, 1000);
+  }
+
+  // ---- living mock: lyrics cycle like real synced lyrics, progress plays ----
+  var lyricLines = Array.prototype.slice.call(document.querySelectorAll('.mock-lyrics > *'));
+  var progressBar = document.querySelector('.mock-progress span');
+  var timeRow = document.querySelectorAll('.mock-time-row span');
+  var demoPos = 102, demoDur = 238, demoPlaying = true, lyricIdx = 1;
+
+  function drawLyrics() {
+    lyricLines.forEach(function (line, i) { line.classList.toggle('is-live', i === lyricIdx); });
+  }
+  if (lyricLines.length) drawLyrics();
+
+  function fmtDemo(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function drawProgress() {
+    if (progressBar) progressBar.style.width = (demoPos / demoDur * 100).toFixed(1) + '%';
+    if (timeRow.length) timeRow[0].textContent = fmtDemo(demoPos);
+  }
+  drawProgress();
+
+  if (play) play.addEventListener('click', function () { demoPlaying = !demoPlaying; });
+
+  if (!reduceMotion) {
+    window.setInterval(function () {
+      if (document.hidden || !demoPlaying) return;
+      demoPos = demoPos >= demoDur ? 0 : demoPos + 1;
+      drawProgress();
+    }, 1000);
+    if (lyricLines.length) window.setInterval(function () {
+      if (document.hidden || !demoPlaying) return;
+      lyricIdx = (lyricIdx + 1) % lyricLines.length;
+      drawLyrics();
+    }, 2600);
+  }
+
+  // ---- scroll reveals: once, gentle, skipped for reduced motion ----
+  if (!reduceMotion && 'IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    Array.prototype.forEach.call(
+      document.querySelectorAll('.section-heading, .details-panel, .final-cta'),
+      function (el) { el.classList.add('reveal'); io.observe(el); }
+    );
+    Array.prototype.forEach.call(document.querySelectorAll('.feature-card'), function (el, i) {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i % 2) * 80 + 'ms';
+      io.observe(el);
+    });
   }
 
   if (reduceMotion) {
