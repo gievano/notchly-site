@@ -20,13 +20,49 @@
   tickClock();
   window.setInterval(tickClock, 30000);
 
+  // ---- sliding segmented-control indicator ----
+  var tabBar = document.querySelector('.mock-tabs');
+  var indicator = document.querySelector('.mock-tab-indicator');
+  function positionIndicator() {
+    if (!tabBar || !indicator) return;
+    var active = tabBar.querySelector('.mock-tab.is-active');
+    if (!active) return;
+    indicator.style.width = active.offsetWidth + 'px';
+    indicator.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+  }
+
+  // ---- notch behaviour mirrors the real app: hover opens, leaving closes;
+  // a click pins it open or shut (and is the only control on touch) ----
+  var pinnedOpen = true;
+  var hoverTimer = null;
+  function setNotch(open) {
+    if (!notch) return;
+    notch.classList.toggle('is-open', open);
+    if (toggle) toggle.setAttribute('aria-expanded', String(open));
+    positionIndicator();
+    window.setTimeout(positionIndicator, 600);
+  }
   if (toggle && notch) {
     toggle.addEventListener('click', function () {
       var open = !notch.classList.contains('is-open');
-      notch.classList.toggle('is-open', open);
-      toggle.setAttribute('aria-expanded', String(open));
+      pinnedOpen = open;
+      setNotch(open);
     });
+    if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      notch.addEventListener('mouseenter', function () {
+        window.clearTimeout(hoverTimer);
+        if (!notch.classList.contains('is-open')) setNotch(true);
+      });
+      notch.addEventListener('mouseleave', function () {
+        if (pinnedOpen) return;
+        window.clearTimeout(hoverTimer);
+        hoverTimer = window.setTimeout(function () { setNotch(false); }, 280);
+      });
+    }
   }
+  positionIndicator();
+  window.addEventListener('load', positionIndicator);
+  window.addEventListener('resize', positionIndicator);
 
   function activateTab(selected, focusButton) {
     var name = selected.getAttribute('data-view');
@@ -41,6 +77,7 @@
       view.hidden = !active;
       view.classList.toggle('is-active', active);
     });
+    positionIndicator();
     if (focusButton) selected.focus();
   }
 
@@ -140,6 +177,30 @@
       el.style.transitionDelay = (i % 2) * 80 + 'ms';
       io.observe(el);
     });
+  }
+
+  // ---- hero depth: the desktop window leans toward the cursor, gently ----
+  var desk = document.getElementById('desktopDemo');
+  if (desk && !reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    var BASE_RY = -3, BASE_RX = 1, tRY = 0, tRX = 0, cRY = 0, cRX = 0, tiltRaf = null;
+    function tiltLoop() {
+      cRY += (tRY - cRY) * 0.08;
+      cRX += (tRX - cRX) * 0.08;
+      desk.style.transform = 'perspective(1500px) rotateY(' + (BASE_RY + cRY).toFixed(3) +
+        'deg) rotateX(' + (BASE_RX + cRX).toFixed(3) + 'deg)';
+      if (Math.abs(tRY - cRY) > 0.01 || Math.abs(tRX - cRX) > 0.01) {
+        tiltRaf = window.requestAnimationFrame(tiltLoop);
+      } else tiltRaf = null;
+    }
+    function kickTilt() { if (!tiltRaf) tiltRaf = window.requestAnimationFrame(tiltLoop); }
+    desk.addEventListener('mousemove', function (e) {
+      if (window.innerWidth <= 1050) return;
+      var r = desk.getBoundingClientRect();
+      tRY = ((e.clientX - r.left) / r.width - 0.5) * 2.4;
+      tRX = -((e.clientY - r.top) / r.height - 0.5) * 1.8;
+      kickTilt();
+    });
+    desk.addEventListener('mouseleave', function () { tRY = 0; tRX = 0; kickTilt(); });
   }
 
   if (reduceMotion) {
