@@ -100,8 +100,8 @@
   });
   var mu = $('muLayout'), muToggle = $('muToggle');
   if (muToggle) muToggle.addEventListener('click', function () {
-    var classic = mu.classList.toggle('classic');
-    muToggle.setAttribute('aria-pressed', String(!classic));
+    var hero = mu.classList.toggle('hero');
+    muToggle.setAttribute('aria-pressed', String(hero));
   });
 
   /* ---------- focus: a real ticking pomodoro ---------- */
@@ -109,7 +109,7 @@
   var foTime = $('foTime'), foProg = $('foProg');
   function drawFo() {
     if (foTime) foTime.textContent = String(Math.floor(foLeft / 60)).padStart(2, '0') + ':' + String(foLeft % 60).padStart(2, '0');
-    if (foProg) foProg.style.strokeDashoffset = (188.5 * foLeft / 1500).toFixed(1);
+    if (foProg) foProg.style.strokeDashoffset = (289 * foLeft / 1500).toFixed(1);
   }
   drawFo();
   setInterval(function () { if (document.hidden || foLeft <= 0) return; foLeft -= 1; drawFo(); }, 1000);
@@ -154,6 +154,15 @@
     for (var d = 1; d <= days; d++) cells += '<span class="' + (d === today ? 'today' : '') + '">' + d + '</span>';
     grid.innerHTML = cells;
   })();
+
+  /* ---------- filmstrip: drag to scroll (native bar hidden) ---------- */
+  var strip = document.querySelector('.strip-row');
+  if (strip) {
+    var sDown = false, sX = 0, sL = 0;
+    strip.addEventListener('pointerdown', function (e) { sDown = true; sX = e.clientX; sL = strip.scrollLeft; strip.classList.add('dragging'); });
+    window.addEventListener('pointermove', function (e) { if (sDown) strip.scrollLeft = sL - (e.clientX - sX); });
+    window.addEventListener('pointerup', function () { sDown = false; strip.classList.remove('dragging'); });
+  }
 
   /* ---------- download buttons: held until the final build ---------- */
   Array.prototype.forEach.call(document.querySelectorAll('.is-waiting'), function (btn) {

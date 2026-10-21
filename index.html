@@ -4,9 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#000000">
-  <title>notchly — a little mac, on your windows</title>
+  <title>notchly — a little notch, on your windows</title>
   <meta name="description" content="A mac-style notch for Windows. Music, synced lyrics, a focus timer, water, a file shelf, todo and calendar — tucked into the top edge of your screen.">
-  <meta property="og:title" content="notchly — a little mac, on your windows">
+  <meta property="og:title" content="notchly — a little notch, on your windows">
   <meta property="og:description" content="The top of your screen, put to work. Try the notch right on this page — it behaves like the real app.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,27 +22,24 @@
   <div class="notch-zone" id="notchZone">
     <div class="notch" id="notch">
       <div class="notch-pill" id="notchPill" role="button" tabindex="0" aria-expanded="false" aria-label="open the notchly demo">
-        <span class="pill-art" aria-hidden="true"><i></i></span>
-        <span class="pill-meta"><b id="pillTitle">The Machine</b><small id="pillArtist">Reed Wonder</small></span>
-        <span class="pill-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="pill-art" aria-hidden="true"><span class="pill-eq"><i></i><i></i><i></i></span></span>
+        <span class="pill-meta"><b id="pillTitle">The Machine</b></span>
+        <span class="pill-right" aria-hidden="true"><svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="rgba(255,255,255,.45)"/><rect x="2" y="2" width="15" height="8" rx="2" fill="#fff"/><path d="M24.8 4v4a2.2 2.2 0 0 0 0-4Z" fill="rgba(255,255,255,.45)"/></svg></span>
       </div>
       <div class="notch-panel" id="notchPanel" aria-hidden="true">
         <div class="np-head">
           <span class="np-title" id="npTitle">Music</span>
-          <span class="np-clock"><b id="npClock">9:41</b><small id="npDate">Tue 21 Oct</small></span>
-          <span class="np-batt" aria-hidden="true"><svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="rgba(255,255,255,.45)"/><rect id="npBattFill" x="2" y="2" width="14" height="8" rx="2" fill="#fff"/><path d="M24.8 4v4a2.2 2.2 0 0 0 0-4Z" fill="rgba(255,255,255,.45)"/></svg><em id="npBattPct">76</em></span>
+          <span class="np-clock"><i class="np-dot"></i><span id="npDate">Tue 21 Oct</span><b id="npClock">9:41</b></span>
+          <span class="np-batt" aria-hidden="true"><em id="npBattPct">76%</em><svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="rgba(255,255,255,.45)"/><rect id="npBattFill" x="2" y="2" width="15" height="8" rx="2" fill="#fff"/><path d="M24.8 4v4a2.2 2.2 0 0 0 0-4Z" fill="rgba(255,255,255,.45)"/></svg></span>
         </div>
         <div class="np-pages" id="npPages">
 
           <section class="np-page" data-name="Music">
-            <div class="mu" id="muLayout">
-              <div class="mu-art" aria-hidden="true"><span></span></div>
-              <div class="mu-meta">
-                <span class="mu-over">Now playing</span>
-                <h3>The Machine</h3>
-                <p>Reed Wonder · Single</p>
-                <div class="mu-bar"><span id="muFill"></span></div>
-                <div class="mu-times"><span id="muPos">1:24</span><span>−1:47</span></div>
+            <div class="mu hero" id="muLayout">
+              <div class="mu-left">
+                <div class="mu-art" aria-hidden="true"></div>
+                <div class="mu-title">The Machine</div>
+                <div class="mu-artist">Reed Wonder</div>
                 <div class="mu-controls">
                   <button class="mu-btn" type="button" aria-label="previous track">⏮</button>
                   <button class="mu-btn mu-play" id="muPlay" type="button" aria-label="pause">⏸</button>
@@ -60,12 +57,13 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>
               </button>
             </div>
+            <div class="mu-prog"><span id="muPos">1:24</span><div class="mu-track"><span id="muFill"></span></div><span>−1:47</span></div>
           </section>
 
           <section class="np-page" data-name="Focus">
             <div class="fo">
               <div class="fo-badge" aria-hidden="true">
-                <svg viewBox="0 0 72 72"><circle class="fo-track" cx="36" cy="36" r="30"/><circle class="fo-prog" id="foProg" cx="36" cy="36" r="30"/></svg>
+                <svg viewBox="0 0 96 96"><circle class="fo-track" cx="48" cy="48" r="46"/><circle class="fo-prog" id="foProg" cx="48" cy="48" r="46"/></svg>
                 <svg class="fo-sw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 2.6h5.2"/><path d="M12 2.6v3"/><circle cx="12" cy="13.6" r="7.4"/><path d="M12 13.6V9.9"/><path d="M12 13.6l2.6 1.7"/></svg>
               </div>
               <div class="fo-mid">
@@ -135,7 +133,7 @@
         </div>
       </div>
       <div class="stage-copy">
-        <h1>a little mac.<br>on your windows.</h1>
+        <h1>a little notch.<br>on your windows.</h1>
         <p class="lede">notchly tucks your music, lyrics, a focus timer and the small stuff into a notch at the top edge of your screen. Brush past it and it opens. Ignore it and it stays out of the way.</p>
         <div class="stage-actions">
           <a class="btn btn-solid is-waiting" id="dlBtn" href="#" aria-disabled="true">Download for Windows</a>
