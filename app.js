@@ -1,210 +1,162 @@
-// notchly site: small interactions for the product mockup. No runtime dependencies.
+// notchly site v2 — the notch on this page behaves like the app:
+// hover opens, leaving closes, a click pins it, pages slide.
 (function () {
   'use strict';
-
-  var clock = document.getElementById('desktopClock');
-  var notch = document.getElementById('mockNotch');
-  var toggle = document.getElementById('mockToggle');
-  var play = document.getElementById('mockPlay');
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.mock-tab'));
-  var views = Array.prototype.slice.call(document.querySelectorAll('.mock-view'));
+  var $ = function (id) { return document.getElementById(id); };
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  /* ---------- header clock + battery ---------- */
+  var clock = $('npClock'), dateEl = $('npDate');
   function tickClock() {
-    if (!clock) return;
-    clock.textContent = new Intl.DateTimeFormat(undefined, {
-      hour: 'numeric',
-      minute: '2-digit'
-    }).format(new Date());
+    var now = new Date();
+    if (clock) clock.textContent = now.toLocaleTimeString('en-GB', { hour: 'numeric', minute: '2-digit' }).replace(/\s/g, '');
+    if (dateEl) dateEl.textContent = now.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' });
   }
-  tickClock();
-  window.setInterval(tickClock, 30000);
+  tickClock(); setInterval(tickClock, 10000);
+  var battFill = $('npBattFill'); if (battFill) battFill.setAttribute('width', (19 * 0.76).toFixed(1));
 
-  // ---- sliding segmented-control indicator ----
-  var tabBar = document.querySelector('.mock-tabs');
-  var indicator = document.querySelector('.mock-tab-indicator');
-  function positionIndicator() {
-    if (!tabBar || !indicator) return;
-    var active = tabBar.querySelector('.mock-tab.is-active');
-    if (!active) return;
-    indicator.style.width = active.offsetWidth + 'px';
-    indicator.style.transform = 'translateX(' + active.offsetLeft + 'px)';
+  /* ---------- notch open / close / pin ---------- */
+  var notch = $('notch'), pill = $('notchPill'), panel = $('notchPanel');
+  var pinned = null; // null = follow hover; true/false = pinned by click
+  function setOpen(open) {
+    notch.classList.toggle('open', open);
+    pill.setAttribute('aria-expanded', String(open));
+    panel.setAttribute('aria-hidden', String(!open));
   }
+  function isOpen() { return notch.classList.contains('open'); }
+  notch.addEventListener('mouseenter', function () { if (pinned === null) setOpen(true); });
+  notch.addEventListener('mouseleave', function () { if (pinned === null) setOpen(false); });
+  pill.addEventListener('click', function () { pinned = !isOpen(); setOpen(pinned); });
+  pill.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pinned = !isOpen(); setOpen(pinned); }
+  });
+  // one orchestrated moment on load: the notch opens to say hello
+  window.setTimeout(function () { if (pinned === null) setOpen(true); }, 700);
 
-  // ---- notch behaviour mirrors the real app: hover opens, leaving closes;
-  // a click pins it open or shut (and is the only control on touch) ----
-  var pinnedOpen = true;
-  var hoverTimer = null;
-  function setNotch(open) {
-    if (!notch) return;
-    notch.classList.toggle('is-open', open);
-    if (toggle) toggle.setAttribute('aria-expanded', String(open));
-    positionIndicator();
-    window.setTimeout(positionIndicator, 600);
-  }
-  if (toggle && notch) {
-    toggle.addEventListener('click', function () {
-      var open = !notch.classList.contains('is-open');
-      pinnedOpen = open;
-      setNotch(open);
+  /* ---------- pages carousel ---------- */
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.np-page'));
+  var dots = Array.prototype.slice.call(document.querySelectorAll('#npDots i'));
+  var title = $('npTitle');
+  var active = 0;
+  function paint() {
+    pages.forEach(function (pg, i) {
+      var off = i - active;
+      pg.style.transform = 'translateX(' + off * 26 + 'px) scale(' + (off === 0 ? 1 : 0.965) + ')';
+      pg.style.opacity = off === 0 ? '1' : '0';
+      pg.style.pointerEvents = off === 0 ? 'auto' : 'none';
+      pg.style.visibility = Math.abs(off) > 1 ? 'hidden' : 'visible';
     });
-    if (!reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-      notch.addEventListener('mouseenter', function () {
-        window.clearTimeout(hoverTimer);
-        if (!notch.classList.contains('is-open')) setNotch(true);
-      });
-      notch.addEventListener('mouseleave', function () {
-        if (pinnedOpen) return;
-        window.clearTimeout(hoverTimer);
-        hoverTimer = window.setTimeout(function () { setNotch(false); }, 280);
-      });
-    }
+    dots.forEach(function (d, i) { d.classList.toggle('on', i === active); });
+    if (title) title.textContent = pages[active].getAttribute('data-name');
   }
-  positionIndicator();
-  window.addEventListener('load', positionIndicator);
-  window.addEventListener('resize', positionIndicator);
+  function goTo(i) { active = Math.max(0, Math.min(pages.length - 1, i)); paint(); }
+  dots.forEach(function (d, i) { d.addEventListener('click', function () { goTo(i); }); });
+  paint();
 
-  function activateTab(selected, focusButton) {
-    var name = selected.getAttribute('data-view');
-    tabs.forEach(function (tab) {
-      var active = tab === selected;
-      tab.classList.toggle('is-active', active);
-      tab.setAttribute('aria-selected', String(active));
-      tab.tabIndex = active ? 0 : -1;
-    });
-    views.forEach(function (view) {
-      var active = view.id === 'view-' + name;
-      view.hidden = !active;
-      view.classList.toggle('is-active', active);
-    });
-    positionIndicator();
-    if (focusButton) selected.focus();
-  }
+  // drag / swipe across the panel
+  var dragX = null;
+  panel.addEventListener('pointerdown', function (e) { dragX = e.clientX; });
+  panel.addEventListener('pointerup', function (e) {
+    if (dragX === null) return;
+    var dx = e.clientX - dragX; dragX = null;
+    if (Math.abs(dx) > 48) goTo(active + (dx < 0 ? 1 : -1));
+  });
+  var wheelLock = 0;
+  panel.addEventListener('wheel', function (e) {
+    if (Math.abs(e.deltaX) < Math.abs(e.deltaY) || Math.abs(e.deltaX) < 8) return;
+    var now = Date.now(); if (now - wheelLock < 420) return; wheelLock = now;
+    goTo(active + (e.deltaX > 0 ? 1 : -1));
+  }, { passive: true });
 
-  tabs.forEach(function (tab, index) {
-    tab.tabIndex = tab.classList.contains('is-active') ? 0 : -1;
-    tab.addEventListener('click', function () { activateTab(tab, false); });
-    tab.addEventListener('keydown', function (event) {
-      var next = index;
-      if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
-      else if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length;
-      else if (event.key === 'Home') next = 0;
-      else if (event.key === 'End') next = tabs.length - 1;
-      else return;
-      event.preventDefault();
-      activateTab(tabs[next], true);
+  /* ---------- music: progress, lyric cycle, layout toggle ---------- */
+  var playing = true, pos = 84, dur = 191;
+  var fill = $('muFill'), posEl = $('muPos'), playBtn = $('muPlay');
+  function fmt(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
+  function drawMu() {
+    if (fill) fill.style.width = (pos / dur * 100).toFixed(1) + '%';
+    if (posEl) posEl.textContent = fmt(pos);
+  }
+  drawMu();
+  var lyricBox = $('muLyrics');
+  var lines = lyricBox ? Array.prototype.slice.call(lyricBox.children) : [];
+  var lyricIdx = 1;
+  function drawLyrics() {
+    lines.forEach(function (ln, i) {
+      var d = Math.abs(i - lyricIdx);
+      ln.className = d === 0 ? 'act' : d === 1 ? 'd1' : d === 2 ? 'd2' : 'far';
     });
+  }
+  drawLyrics();
+  if (!reduceMotion) setInterval(function () {
+    if (document.hidden || !playing) return;
+    pos = pos >= dur ? 0 : pos + 1; drawMu();
+    lyricIdx = (lyricIdx + 1) % lines.length; drawLyrics();
+  }, 2600);
+  if (playBtn) playBtn.addEventListener('click', function () {
+    playing = !playing;
+    playBtn.textContent = playing ? '⏸' : '▶';
+    playBtn.setAttribute('aria-label', playing ? 'pause' : 'play');
+    notch.classList.toggle('paused', !playing);
+  });
+  var mu = $('muLayout'), muToggle = $('muToggle');
+  if (muToggle) muToggle.addEventListener('click', function () {
+    var classic = mu.classList.toggle('classic');
+    muToggle.setAttribute('aria-pressed', String(!classic));
   });
 
-  if (play) {
-    var isPlaying = true;
-    play.addEventListener('click', function () {
-      isPlaying = !isPlaying;
-      play.textContent = isPlaying ? 'Ⅱ' : '▶';
-      play.setAttribute('aria-label', isPlaying ? 'Pause demo playback' : 'Play demo playback');
-      if (notch) notch.classList.toggle('is-playing', isPlaying);
-      var equalizer = notch && notch.querySelector('.mock-eq');
-      if (equalizer) equalizer.style.opacity = isPlaying ? '1' : '.35';
-      if (equalizer) equalizer.style.animationPlayState = isPlaying ? 'running' : 'paused';
-    });
+  /* ---------- focus: a real ticking pomodoro ---------- */
+  var foLeft = 24 * 60 + 18;
+  var foTime = $('foTime'), foProg = $('foProg');
+  function drawFo() {
+    if (foTime) foTime.textContent = String(Math.floor(foLeft / 60)).padStart(2, '0') + ':' + String(foLeft % 60).padStart(2, '0');
+    if (foProg) foProg.style.strokeDashoffset = (188.5 * foLeft / 1500).toFixed(1);
   }
+  drawFo();
+  setInterval(function () { if (document.hidden || foLeft <= 0) return; foLeft -= 1; drawFo(); }, 1000);
 
-  // The mock is illustrative, but the timer still ticks so the surface feels real.
-  var focusTimer = document.getElementById('focusDemoTime');
-  if (focusTimer) {
-    var secondsLeft = 24 * 60 + 18;
-    function drawTimer() {
-      var min = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
-      var sec = String(secondsLeft % 60).padStart(2, '0');
-      focusTimer.textContent = min + ':' + sec;
-      var ft = document.querySelector('.focus-demo-track span');
-      if (ft) ft.style.width = ((1 - secondsLeft / 1500) * 100).toFixed(1) + '%';
-    }
-    drawTimer();
-    window.setInterval(function () {
-      if (document.hidden || secondsLeft <= 0) return;
-      secondsLeft -= 1;
-      drawTimer();
-    }, 1000);
+  /* ---------- water: the drink button works ---------- */
+  var waMl = 750, waGoal = 1500;
+  var waMlEl = $('waMl'), waPct = $('waPct'), waRing = $('waRing');
+  function drawWa() {
+    var pct = Math.min(100, Math.round(waMl / waGoal * 100));
+    if (waMlEl) waMlEl.textContent = waMl;
+    if (waPct) waPct.textContent = pct + '%';
+    if (waRing) waRing.style.background = 'conic-gradient(#38bdf8 0 ' + pct + '%, rgba(255,255,255,.09) ' + pct + '% 100%)';
   }
+  drawWa();
+  var waDrink = $('waDrink');
+  if (waDrink) waDrink.addEventListener('click', function () { waMl = Math.min(waGoal, waMl + 250); drawWa(); });
 
-  // ---- living mock: lyrics cycle like real synced lyrics, progress plays ----
-  var lyricLines = Array.prototype.slice.call(document.querySelectorAll('.mock-lyrics > *'));
-  var progressBar = document.querySelector('.mock-progress span');
-  var timeRow = document.querySelectorAll('.mock-time-row span');
-  var demoPos = 102, demoDur = 238, demoPlaying = true, lyricIdx = 1;
-
-  function drawLyrics() {
-    lyricLines.forEach(function (line, i) { line.classList.toggle('is-live', i === lyricIdx); });
+  /* ---------- todo: summary follows the checks ---------- */
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.td-row'));
+  var summary = document.querySelector('.td-summary');
+  var bar = document.querySelector('.td-bar span');
+  function drawTd() {
+    var done = rows.filter(function (r) { return r.querySelector('input').checked; }).length;
+    rows.forEach(function (r) { r.classList.toggle('done', r.querySelector('input').checked); });
+    if (summary) summary.textContent = done + ' of ' + rows.length + ' done';
+    if (bar) bar.style.width = (done / rows.length * 100) + '%';
   }
-  if (lyricLines.length) drawLyrics();
+  rows.forEach(function (r) { r.querySelector('input').addEventListener('change', drawTd); });
+  drawTd();
 
-  function fmtDemo(s) { return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); }
-  function drawProgress() {
-    if (progressBar) progressBar.style.width = (demoPos / demoDur * 100).toFixed(1) + '%';
-    if (timeRow.length) timeRow[0].textContent = fmtDemo(demoPos);
-  }
-  drawProgress();
+  /* ---------- calendar: the real current month ---------- */
+  var grid = $('caGrid'), monthEl = $('caMonth');
+  (function buildCalendar() {
+    if (!grid) return;
+    var now = new Date(), y = now.getFullYear(), m = now.getMonth(), today = now.getDate();
+    if (monthEl) monthEl.textContent = now.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
+    var first = (new Date(y, m, 1).getDay() + 6) % 7; // monday-first
+    var days = new Date(y, m + 1, 0).getDate();
+    var prevDays = new Date(y, m, 0).getDate();
+    var cells = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(function (d) { return '<span class="wd">' + d + '</span>'; }).join('');
+    for (var i = first - 1; i >= 0; i--) cells += '<span class="dim">' + (prevDays - i) + '</span>';
+    for (var d = 1; d <= days; d++) cells += '<span class="' + (d === today ? 'today' : '') + '">' + d + '</span>';
+    grid.innerHTML = cells;
+  })();
 
-  if (play) play.addEventListener('click', function () { demoPlaying = !demoPlaying; });
-
-  if (!reduceMotion) {
-    window.setInterval(function () {
-      if (document.hidden || !demoPlaying) return;
-      demoPos = demoPos >= demoDur ? 0 : demoPos + 1;
-      drawProgress();
-    }, 1000);
-    if (lyricLines.length) window.setInterval(function () {
-      if (document.hidden || !demoPlaying) return;
-      lyricIdx = (lyricIdx + 1) % lyricLines.length;
-      drawLyrics();
-    }, 2600);
-  }
-
-  // ---- scroll reveals: once, gentle, skipped for reduced motion ----
-  if (!reduceMotion && 'IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
-      });
-    }, { threshold: 0.12 });
-    Array.prototype.forEach.call(
-      document.querySelectorAll('.section-heading, .details-panel, .final-cta'),
-      function (el) { el.classList.add('reveal'); io.observe(el); }
-    );
-    Array.prototype.forEach.call(document.querySelectorAll('.feature-card'), function (el, i) {
-      el.classList.add('reveal');
-      el.style.transitionDelay = (i % 2) * 80 + 'ms';
-      io.observe(el);
-    });
-  }
-
-  // ---- hero depth: the desktop window leans toward the cursor, gently ----
-  var desk = document.getElementById('desktopDemo');
-  if (desk && !reduceMotion && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
-    var BASE_RY = -3, BASE_RX = 1, tRY = 0, tRX = 0, cRY = 0, cRX = 0, tiltRaf = null;
-    function tiltLoop() {
-      cRY += (tRY - cRY) * 0.08;
-      cRX += (tRX - cRX) * 0.08;
-      desk.style.transform = 'perspective(1500px) rotateY(' + (BASE_RY + cRY).toFixed(3) +
-        'deg) rotateX(' + (BASE_RX + cRX).toFixed(3) + 'deg)';
-      if (Math.abs(tRY - cRY) > 0.01 || Math.abs(tRX - cRX) > 0.01) {
-        tiltRaf = window.requestAnimationFrame(tiltLoop);
-      } else tiltRaf = null;
-    }
-    function kickTilt() { if (!tiltRaf) tiltRaf = window.requestAnimationFrame(tiltLoop); }
-    desk.addEventListener('mousemove', function (e) {
-      if (window.innerWidth <= 1050) return;
-      var r = desk.getBoundingClientRect();
-      tRY = ((e.clientX - r.left) / r.width - 0.5) * 2.4;
-      tRX = -((e.clientY - r.top) / r.height - 0.5) * 1.8;
-      kickTilt();
-    });
-    desk.addEventListener('mouseleave', function () { tRY = 0; tRX = 0; kickTilt(); });
-  }
-
-  if (reduceMotion) {
-    var ticker = document.querySelector('.ticker-track');
-    if (ticker) ticker.style.animation = 'none';
-  }
+  /* ---------- download buttons: held until the final build ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('.is-waiting'), function (btn) {
+    btn.addEventListener('click', function (e) { e.preventDefault(); });
+  });
 })();

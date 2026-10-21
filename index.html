@@ -3,194 +3,204 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090a0c">
+  <meta name="theme-color" content="#000000">
   <title>notchly — a little mac, on your windows</title>
-  <meta name="description" content="A small, mac-style notch for Windows. Keep music, synced lyrics, focus, files and quick notes close without another full-size app.">
+  <meta name="description" content="A mac-style notch for Windows. Music, synced lyrics, a focus timer, water, a file shelf, todo and calendar — tucked into the top edge of your screen.">
   <meta property="og:title" content="notchly — a little mac, on your windows">
-  <meta property="og:description" content="Music, synced lyrics, focus and the little things — tucked into a small always-on-top notch for Windows.">
+  <meta property="og:description" content="The top of your screen, put to work. Try the notch right on this page — it behaves like the real app.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="site-header">
-    <a class="brand" href="#" aria-label="notchly home">
-      <span class="brand-mark" aria-hidden="true"><i></i></span>
-      <span>notchly</span>
-    </a>
-    <nav class="site-nav" aria-label="Main navigation">
-      <a href="#features">Features</a>
-      <a href="#details">Details</a>
-      <a class="nav-github" href="https://github.com/gievano/notchly" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-    </nav>
-  </header>
 
-  <main>
-    <section class="hero section-wrap" aria-labelledby="hero-title">
-      <div class="hero-copy">
-        <div class="eyebrow"><span class="status-dot"></span> A tiny overlay for Windows</div>
-        <h1 id="hero-title"><span class="rl"><span>a little mac.</span></span><span class="rl dim"><span>on your windows.</span></span></h1>
-        <p class="hero-lede">Music, synced lyrics, focus and the little things you keep switching apps for — tucked into a notch at the top of your screen.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="https://github.com/gievano/notchly/releases">Get notchly <span aria-hidden="true">↗</span></a>
-          <a class="button button-secondary" href="#features">Take a look <span aria-hidden="true">↓</span></a>
-        </div>
-        <div class="hero-facts" aria-label="Project details">
-          <span>Free</span><span>Open source</span><span>Portable .exe</span><span>MIT license</span>
-        </div>
+  <!-- the notch: fixed to the top edge of the page like it is to a screen.
+       it is the real demo — hover to open it, drag or use the dots to move
+       between pages, flip the music layout with its toggle. -->
+  <div class="notch-zone" id="notchZone">
+    <div class="notch" id="notch">
+      <div class="notch-pill" id="notchPill" role="button" tabindex="0" aria-expanded="false" aria-label="open the notchly demo">
+        <span class="pill-art" aria-hidden="true"><i></i></span>
+        <span class="pill-meta"><b id="pillTitle">The Machine</b><small id="pillArtist">Reed Wonder</small></span>
+        <span class="pill-eq" aria-hidden="true"><i></i><i></i><i></i></span>
       </div>
+      <div class="notch-panel" id="notchPanel" aria-hidden="true">
+        <div class="np-head">
+          <span class="np-title" id="npTitle">Music</span>
+          <span class="np-clock"><b id="npClock">9:41</b><small id="npDate">Tue 21 Oct</small></span>
+          <span class="np-batt" aria-hidden="true"><svg viewBox="0 0 27 12"><rect x="0.5" y="0.5" width="22" height="11" rx="3.5" fill="none" stroke="rgba(255,255,255,.45)"/><rect id="npBattFill" x="2" y="2" width="14" height="8" rx="2" fill="#fff"/><path d="M24.8 4v4a2.2 2.2 0 0 0 0-4Z" fill="rgba(255,255,255,.45)"/></svg><em id="npBattPct">76</em></span>
+        </div>
+        <div class="np-pages" id="npPages">
 
-      <div class="hero-visual">
-        <div class="desktop-window" id="desktopDemo">
-          <div class="desktop-topline">
-            <div class="desktop-brand"><span class="desktop-mark"></span> Desktop preview</div>
-            <div class="desktop-status"><span class="status-bars" aria-hidden="true">▂▄▆</span><span>100%</span><span id="desktopClock">9:41</span></div>
-          </div>
-          <div class="desktop-wallpaper">
-            <div class="wallpaper-shape shape-one"></div>
-            <div class="wallpaper-shape shape-two"></div>
-            <div class="wallpaper-shape shape-three"></div>
-            <div class="desktop-shortcuts" aria-hidden="true">
-              <div class="desktop-shortcut"><span class="folder-icon"></span><small>Projects</small></div>
-              <div class="desktop-shortcut"><span class="note-icon"></span><small>Readme</small></div>
-            </div>
-
-            <div class="mock-notch is-open" id="mockNotch">
-              <button class="mock-pill" id="mockToggle" type="button" aria-expanded="true" aria-controls="mockPanel">
-                <span class="mock-cover" aria-hidden="true"><i></i><b></b></span>
-                <span class="mock-track"><strong id="mockPillTitle">Night Drive</strong><small id="mockPillArtist">Mira Sol</small></span>
-                <span class="mock-eq" aria-hidden="true"><i></i><i></i><i></i></span>
-                <span class="toggle-chevron" aria-hidden="true">⌄</span>
-              </button>
-              <div class="mock-panel" id="mockPanel">
-                <div class="mock-tabs" role="tablist" aria-label="Interactive product preview">
-                  <span class="mock-tab-indicator" aria-hidden="true"></span>
-                  <button class="mock-tab is-active" id="tab-music" type="button" role="tab" aria-selected="true" aria-controls="view-music" data-view="music">Music</button>
-                  <button class="mock-tab" id="tab-focus" type="button" role="tab" aria-selected="false" aria-controls="view-focus" data-view="focus">Focus</button>
-                  <button class="mock-tab" id="tab-shelf" type="button" role="tab" aria-selected="false" aria-controls="view-shelf" data-view="shelf">Shelf</button>
-                  <button class="mock-tab" id="tab-todo" type="button" role="tab" aria-selected="false" aria-controls="view-todo" data-view="todo">Todo</button>
+          <section class="np-page" data-name="Music">
+            <div class="mu" id="muLayout">
+              <div class="mu-art" aria-hidden="true"><span></span></div>
+              <div class="mu-meta">
+                <span class="mu-over">Now playing</span>
+                <h3>The Machine</h3>
+                <p>Reed Wonder · Single</p>
+                <div class="mu-bar"><span id="muFill"></span></div>
+                <div class="mu-times"><span id="muPos">1:24</span><span>−1:47</span></div>
+                <div class="mu-controls">
+                  <button class="mu-btn" type="button" aria-label="previous track">⏮</button>
+                  <button class="mu-btn mu-play" id="muPlay" type="button" aria-label="pause">⏸</button>
+                  <button class="mu-btn" type="button" aria-label="next track">⏭</button>
                 </div>
+              </div>
+              <div class="mu-lyrics" id="muLyrics" aria-label="lyrics preview">
+                <span class="d2">Fell in love with the machine</span>
+                <span class="act">Fell in love with you</span>
+                <span class="d1">I made something out of nothing</span>
+                <span class="far">With a couple of wires</span>
+                <span class="far">And a frequency</span>
+              </div>
+              <button class="mu-toggle" id="muToggle" type="button" aria-pressed="true" title="toggle lyrics layout">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="12" r="1.3" fill="currentColor" stroke="none"/><circle cx="3.5" cy="18" r="1.3" fill="currentColor" stroke="none"/></svg>
+              </button>
+            </div>
+          </section>
 
-                <section class="mock-view is-active" id="view-music" role="tabpanel" aria-labelledby="tab-music">
-                  <div class="mock-now-playing">
-                    <div class="mock-album-art" aria-hidden="true"><span></span><i></i></div>
-                    <div class="mock-song-meta"><span class="mock-overline">NOW PLAYING</span><h3>Night Drive</h3><p>Mira Sol · After Hours</p></div>
-                    <button class="mock-icon-button" type="button" aria-label="Pause demo playback" id="mockPlay">Ⅱ</button>
-                  </div>
-                  <div class="mock-progress"><span></span></div>
-                  <div class="mock-time-row"><span>1:42</span><span>3:58</span></div>
-                  <div class="mock-lyrics" aria-label="Illustrative synced lyrics preview">
-                    <span>Lyrics follow the song.</span><strong>One line, right on time.</strong><span>Stay with the moment.</span>
-                  </div>
-                </section>
-
-                <section class="mock-view" id="view-focus" role="tabpanel" aria-labelledby="tab-focus" hidden>
-                  <div class="focus-demo-top"><span class="mock-overline">FOCUS SESSION</span><span class="session-chip"><i></i> In session</span></div>
-                  <div class="focus-demo-time" id="focusDemoTime">24:18</div>
-                  <div class="focus-demo-track"><span></span></div>
-                  <div class="focus-demo-bottom"><span>25 min session</span><span>Take it one thing at a time.</span></div>
-                </section>
-
-                <section class="mock-view" id="view-shelf" role="tabpanel" aria-labelledby="tab-shelf" hidden>
-                  <div class="mock-view-heading"><div><span class="mock-overline">FILE SHELF</span><h3>Keep it close.</h3></div><span class="file-count">03 files</span></div>
-                  <div class="file-row"><span class="file-type file-pdf">PDF</span><span class="file-name">project-brief.pdf<small>2.4 MB</small></span><span class="file-arrow">↗</span></div>
-                  <div class="file-row"><span class="file-type file-img">IMG</span><span class="file-name">reference-board.png<small>840 KB</small></span><span class="file-arrow">↗</span></div>
-                  <div class="file-row"><span class="file-type file-zip">ZIP</span><span class="file-name">assets.zip<small>18.1 MB</small></span><span class="file-arrow">↗</span></div>
-                </section>
-
-                <section class="mock-view" id="view-todo" role="tabpanel" aria-labelledby="tab-todo" hidden>
-                  <div class="mock-view-heading"><div><span class="mock-overline">QUICK LIST</span><h3>On your mind.</h3></div><span class="file-count">2 of 3</span></div>
-                  <div class="todo-row is-done"><span class="todo-check">✓</span><span>Review the brief</span></div>
-                  <div class="todo-row is-done"><span class="todo-check">✓</span><span>Send the notes</span></div>
-                  <div class="todo-row"><span class="todo-check"></span><span>Get back to the good work</span></div>
-                </section>
+          <section class="np-page" data-name="Focus">
+            <div class="fo">
+              <div class="fo-badge" aria-hidden="true">
+                <svg viewBox="0 0 72 72"><circle class="fo-track" cx="36" cy="36" r="30"/><circle class="fo-prog" id="foProg" cx="36" cy="36" r="30"/></svg>
+                <svg class="fo-sw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9.4 2.6h5.2"/><path d="M12 2.6v3"/><circle cx="12" cy="13.6" r="7.4"/><path d="M12 13.6V9.9"/><path d="M12 13.6l2.6 1.7"/></svg>
+              </div>
+              <div class="fo-mid">
+                <div class="fo-time" id="foTime">24:18</div>
+                <div class="fo-state">Focus time</div>
+                <div class="fo-today">today: <b>2 sessions</b> · set <span class="fo-set">●●○○</span></div>
               </div>
             </div>
-
-            <div class="desktop-dock" aria-hidden="true">
-              <span class="dock-app app-finder"></span><span class="dock-app app-music"></span><span class="dock-app app-notes"></span><span class="dock-separator"></span><span class="dock-app app-folder"></span><span class="dock-bin"></span>
+            <div class="fo-actions" aria-hidden="true">
+              <span class="fo-pill">Short Break</span>
+              <span class="fo-play">▶</span>
+              <span class="fo-pill">Long Break</span>
             </div>
-          </div>
-          <div class="desktop-base"><span></span></div>
-        </div>
-        <div class="visual-caption"><span><i class="caption-dot"></i> INTERACTIVE PREVIEW</span><span>Try Music / Focus / Shelf / Todo</span></div>
-      </div>
-    </section>
+          </section>
 
-    <section class="ticker" aria-label="Included features">
-      <div class="ticker-track"><span>Now playing</span><i>·</i><span>Synced lyrics</span><i>·</i><span>Focus timer</span><i>·</i><span>File shelf</span><i>·</i><span>Calendar</span><i>·</i><span>Quick todo</span><i>·</i><span>Now playing</span><i>·</i><span>Synced lyrics</span><i>·</i><span>Focus timer</span><i>·</i><span>File shelf</span><i>·</i><span>Calendar</span><i>·</i><span>Quick todo</span></div>
-    </section>
-
-    <section class="features section-wrap" id="features" aria-labelledby="features-title">
-      <div class="section-heading">
-        <div>
-          <div class="eyebrow">THE USEFUL LITTLE THINGS</div>
-          <h2 id="features-title">Less app-hopping.<br><span>More staying in it.</span></h2>
-        </div>
-        <p>It stays small until you need it. Open the notch, do the thing, get back to what you were doing.</p>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-card feature-card-wide">
-          <div class="feature-copy"><span class="feature-number">01 / MEDIA</span><h3>Your music,<br>without the detour.</h3><p>See what's playing, control playback and follow synced lyrics from one compact surface.</p></div>
-          <div class="feature-art music-feature-art" aria-hidden="true">
-            <div class="mini-player">
-              <div class="mini-cover"><span></span></div>
-              <div class="mini-player-meta"><b>Night Drive</b><small>Mira Sol</small><div class="mini-progress"><i></i></div></div>
-              <div class="mini-play">Ⅱ</div>
+          <section class="np-page" data-name="Water">
+            <div class="wa">
+              <div class="wa-amount"><strong id="waMl">750</strong><span>ml of 1.5 L today</span></div>
+              <div class="wa-ring" id="waRing" aria-hidden="true"><span id="waPct">50%</span></div>
             </div>
-            <div class="lyric-preview"><span>Keep the rhythm close.</span><b>Don't lose the line.</b><span>Let the rest fall away.</span></div>
-          </div>
-        </article>
+            <div class="wa-actions">
+              <button class="wa-drink" id="waDrink" type="button">Drink +250 ml</button>
+              <span class="wa-note">goal, glass size and nudges live in settings</span>
+            </div>
+          </section>
 
-        <article class="feature-card">
-          <span class="feature-number">02 / FOCUS</span><h3>A timer that stays<br>in sight.</h3><p>Start a session and keep the countdown close without another window taking over.</p>
-          <div class="focus-feature-art" aria-hidden="true"><span class="focus-ring"><i></i></span><div><small>FOCUS</small><strong>24:18</strong><span class="focus-state"><i></i> Session running</span></div></div>
-        </article>
+          <section class="np-page" data-name="Shelf">
+            <div class="sh-head"><span>3 items</span><span class="sh-clear">Clear</span></div>
+            <div class="sh-row">
+              <div class="sh-tile"><span class="sh-ico pdf">PDF</span><small>brief.pdf</small></div>
+              <div class="sh-tile"><span class="sh-ico img">PNG</span><small>board.png</small></div>
+              <div class="sh-tile"><span class="sh-ico zip">ZIP</span><small>assets.zip</small></div>
+              <div class="sh-tile sh-zone">drop files<br>here</div>
+            </div>
+            <p class="sh-note">Drag anything up to the notch and the shelf opens to take it — even over a fullscreen app.</p>
+          </section>
 
-        <article class="feature-card">
-          <span class="feature-number">03 / SMALL TASKS</span><h3>Catch the loose ends.</h3><p>A lightweight todo list and a file shelf for the things you'll need again in a minute.</p>
-          <div class="task-feature-art" aria-hidden="true"><div class="task-art-head"><span>Quick list</span><span>•••</span></div><div class="task-art-row done"><i>✓</i><span>Sort the references</span></div><div class="task-art-row"><i></i><span>Finish the last pass</span></div><div class="task-art-row"><i></i><span>Send it over</span></div></div>
-        </article>
+          <section class="np-page" data-name="Todo">
+            <div class="td-summary">1 of 3 done</div>
+            <div class="td-bar"><span></span></div>
+            <label class="td-row done"><input type="checkbox" checked> <span>Reply to the client</span></label>
+            <label class="td-row"><input type="checkbox"> <span>Export the final cut</span></label>
+            <label class="td-row"><input type="checkbox"> <span>Book the studio for Friday</span></label>
+          </section>
 
-        <article class="feature-card feature-card-wide feature-card-calendar">
-          <div class="feature-copy"><span class="feature-number">04 / CALENDAR</span><h3>The date, at a glance.</h3><p>A quiet month view with today marked. No account setup, no busy dashboard.</p></div>
-          <div class="calendar-feature-art" aria-hidden="true">
-            <div class="calendar-month"><span>OCTOBER</span><b>2026</b></div>
-            <div class="calendar-grid"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span><span>28</span><span>29</span><span>30</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span><span>13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span><span class="today">20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span></div>
-          </div>
-        </article>
+          <section class="np-page" data-name="Calendar">
+            <div class="ca-head"><b id="caMonth">October 2026</b><span class="ca-today-btn">Today</span></div>
+            <div class="ca-grid" id="caGrid" aria-hidden="true"></div>
+          </section>
+
+        </div>
+        <div class="np-dots" id="npDots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <section class="details section-wrap" id="details" aria-labelledby="details-title">
-      <div class="details-panel">
-        <div class="details-copy"><div class="eyebrow">SMALL BY DESIGN</div><h2 id="details-title">Not another<br>thing to manage.</h2><p>notchly is a small overlay, not a new workspace. No sign-in flow, no subscription, no giant control centre.</p><a class="text-link" href="https://github.com/gievano/notchly" target="_blank" rel="noreferrer">Read the source <span aria-hidden="true">↗</span></a></div>
-        <div class="detail-list">
-          <div><span class="detail-icon">01</span><span><b>Made for Windows</b><small>Uses Windows media sessions for playback info and controls.</small></span></div>
-          <div><span class="detail-icon">02</span><span><b>Lyrics that follow along</b><small>Synced lyrics from LRCLIB, with a local cache.</small></span></div>
-          <div><span class="detail-icon">03</span><span><b>Your stuff stays yours</b><small>Todos and focus counts stay local in the app.</small></span></div>
-          <div><span class="detail-icon">04</span><span><b>Open source</b><small>MIT licensed. Look through it, fork it, make it yours.</small></span></div>
+  <main>
+    <!-- the screen -->
+    <section class="stage">
+      <div class="wallpaper" aria-hidden="true">
+        <div class="win win-a"></div>
+        <div class="win win-b"></div>
+        <div class="desk-icons">
+          <div class="desk-icon"><span class="di-folder"></span><small>This PC</small></div>
+          <div class="desk-icon"><span class="di-file"></span><small>notes.txt</small></div>
+          <div class="desk-icon"><span class="di-folder"></span><small>Projects</small></div>
         </div>
       </div>
+      <div class="stage-copy">
+        <h1>a little mac.<br>on your windows.</h1>
+        <p class="lede">notchly tucks your music, lyrics, a focus timer and the small stuff into a notch at the top edge of your screen. Brush past it and it opens. Ignore it and it stays out of the way.</p>
+        <div class="stage-actions">
+          <a class="btn btn-solid is-waiting" id="dlBtn" href="#" aria-disabled="true">Download for Windows</a>
+          <span class="dl-note">v0.15.13 is in testing — the public link lands here with the final build.</span>
+        </div>
+      </div>
+      <div class="stage-hint" aria-hidden="true">the notch at the top of this page is live — try it</div>
     </section>
 
-    <section class="final-cta section-wrap" aria-labelledby="cta-title">
-      <div class="cta-kicker"><span class="status-dot"></span> Small window. Useful life.</div>
-      <h2 id="cta-title">Give the top<br>of your screen a job.</h2>
-      <p>Try the portable Windows build, or take a look at the code first.</p>
-      <div class="hero-actions cta-actions">
-        <a class="button button-primary" href="https://github.com/gievano/notchly/releases">Get notchly <span aria-hidden="true">↗</span></a>
-        <a class="button button-dark" href="https://github.com/gievano/notchly" target="_blank" rel="noreferrer">View source</a>
+    <!-- the real thing -->
+    <section class="strip">
+      <div class="strip-head">
+        <h2>The app itself, not a render.</h2>
+        <p>Straight captures of the current build on an ordinary day.</p>
       </div>
-      <div class="cta-footnote">Windows 10 / 11 · Free · MIT license</div>
+      <div class="strip-row">
+        <figure><img src="shots/pomodoro.png" alt="notchly focus page with stopwatch badge and mode pills" loading="lazy"><figcaption>Focus — stopwatch badge, the two other modes as pills</figcaption></figure>
+        <figure><img src="shots/music-hero.png" alt="notchly music page in hero layout with a three-line lyric strip" loading="lazy"><figcaption>Music — the hero layout a song gets when it has no synced lyrics</figcaption></figure>
+        <figure><img src="shots/shelf.png" alt="notchly shelf page with file tiles" loading="lazy"><figcaption>Shelf — files wait here, ready to drag back out</figcaption></figure>
+        <figure><img src="shots/todo.png" alt="notchly todo page with a progress line" loading="lazy"><figcaption>Todo — a short list with a quiet progress line</figcaption></figure>
+        <figure><img src="shots/water.png" alt="notchly water page with daily intake" loading="lazy"><figcaption>Water — today against your goal</figcaption></figure>
+      </div>
+    </section>
+
+    <!-- what lives in it -->
+    <section class="spec">
+      <h2>What lives in the notch</h2>
+      <dl class="spec-table">
+        <div><dt>Music</dt><dd>Whatever Windows is playing, with transport controls and a progress bar you can scrub to the exact second.</dd></div>
+        <div><dt>Lyrics</dt><dd>Synced lines that follow the song, clicked to seek. When a song has no synced lyrics, the artwork takes the stage in a big hero layout instead — the toggle on the music page flips between the two whenever you like.</dd></div>
+        <div><dt>Focus</dt><dd>A pomodoro with Focus, Short Break and Long Break. The countdown also lives in the pill, so it stays visible with the panel shut.</dd></div>
+        <div><dt>Water</dt><dd>A daily goal taken a glass at a time, with a reminder only if you ask for one.</dd></div>
+        <div><dt>Shelf</dt><dd>A parking spot for files. Drop them on the notch, drag them back out into any app, folders and all.</dd></div>
+        <div><dt>Todo</dt><dd>A short list with a progress line. Double-click a line to rewrite it.</dd></div>
+        <div><dt>Calendar</dt><dd>The month at a glance, today in red. No account, nothing to sync.</dd></div>
+      </dl>
+    </section>
+
+    <!-- how it behaves -->
+    <section class="spec">
+      <h2>How it behaves</h2>
+      <dl class="spec-table">
+        <div><dt>Opens on a brush</dt><dd>Move the cursor to the notch and the panel springs open. Move away and it folds shut. No clicking just to peek.</dd></div>
+        <div><dt>Knows when to shrink</dt><dd>Put a video or a game fullscreen and the notch becomes a thin black sliver. Under a maximised window it opens only when you click the black strip itself — never when you aim at the tab next to it.</dd></div>
+        <div><dt>One copy only</dt><dd>Launch it while it is already running and the running notch comes forward. Quit from the tray and it actually quits.</dd></div>
+        <div><dt>Keeps to itself</dt><dd>One small overlay on your own machine. No sign-in, no telemetry, and your lists and counts never leave the app.</dd></div>
+      </dl>
+    </section>
+
+    <!-- take it -->
+    <section class="take">
+      <h2>Give the top of<br>your screen a job.</h2>
+      <div class="stage-actions">
+        <a class="btn btn-solid is-waiting" href="#" aria-disabled="true">Download for Windows</a>
+        <span class="dl-note">Free · Windows 10 &amp; 11 · portable, nothing to install · about 85 MB</span>
+      </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <a class="brand footer-brand" href="#"><span class="brand-mark" aria-hidden="true"><i></i></span><span>notchly</span></a>
+  <footer>
+    <span class="foot-brand">notchly</span>
     <span>Made for the small stuff.</span>
-    <div><a href="https://github.com/gievano/notchly" target="_blank" rel="noreferrer">GitHub</a><a href="https://github.com/gievano/notchly/releases">Releases</a></div>
+    <span id="footVer">v0.15.13 — in testing</span>
   </footer>
+
   <script src="app.js"></script>
 </body>
 </html>
